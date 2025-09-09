@@ -1,0 +1,91 @@
+/* static/css/style.css */
+
+
+/* Paleta de Cores e Fonte */
+
+:root {
+    --cor-fundo-escuro: #111827;
+    /* Azul quase preto */
+    --cor-fundo-card: #1f2937;
+    /* Azul-acinzentado escuro */
+    --cor-borda: #374151;
+    /* Cinza escuro */
+    --cor-texto-principal: #E5E7EB;
+    --cor-texto-secundario: #9CA3AF;
+    --cor-azul-brilhante: #3b82f6;
+}
+
+body {
+    background-color: var(--cor-fundo-escuro);
+    /* Efeito de gradiente sutil no fundo */
+    background-image: radial-gradient(circle at 1% 1%, var(--cor-fundo-card) 0%, transparent 50%), radial-gradient(circle at 99% 99%, #132c58 0%, transparent 40%);
+    color: var(--cor-texto-principal);
+    min-height: 100vh;
+}
+
+
+/* Título com Efeito Gradiente */
+
+.titulo-gradiente {
+    background: linear-gradient(90deg, #60a5fa, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    font-weight: bold;
+}
+
+
+/* Estilo dos Cards de Aluno */
+
+.card-aluno {
+    background-color: var(--cor-fundo-card) !important;
+    border: 1px solid var(--cor-borda) !important;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    text-decoration: none;
+}
+
+.card-aluno:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.2);
+    border-color: var(--cor-azul-brilhante) !important;
+}
+
+.card-aluno .card-img-top {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+
+/* Botões com Gradiente */
+
+.btn-gradiente {
+    background-image: linear-gradient(to right, #3b82f6, #60a5fa);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+    background-size: 200% auto;
+}
+
+.btn-gradiente:hover {
+    background-position: right center;
+    color: white;
+}
+
+
+/* Estilo customizado para os botões de período (radio) */
+
+.btn-check:checked+.btn-outline-primary {
+    background-color: var(--cor-azul-brilhante) !important;
+    border-color: var(--cor-azul-brilhante) !important;
+    color: white !important;
+}
+
+
+/* Badges de Skills */
+
+.badge.bg-primary {
+    background-color: rgba(59, 130, 246, 0.3) !important;
+    color: #93c5fd !important;
+    border: 1px solid #3b82f6;
+}
