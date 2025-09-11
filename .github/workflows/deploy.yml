@@ -1,0 +1,42 @@
+# Nome do seu workflow, aparecerá na aba "Actions" do GitHub
+name: Deploy no VPS
+
+# Gatilho (trigger): Este workflow roda sempre que houver um push na branch 'main'
+on:
+  push:
+    branches: [ main ]
+
+# Tarefas (jobs) que serão executadas
+jobs:
+  deploy:
+    # O tipo de servidor temporário (runner) que o GitHub vai usar
+    runs-on: ubuntu-latest
+
+    # Passos (steps) que a tarefa de deploy vai executar em sequência
+    steps:
+      # 1. Baixa o código do seu repositório para dentro do runner
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      # 2. Conecta no seu VPS via SSH e executa os comandos de deploy
+      - name: Deploy no VPS via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          script: |
+            # Navega até o diretório do seu projeto no VPS
+            cd /home/UniExpo/
+            
+            # Puxa as últimas alterações do repositório
+            # (Você precisa ter clonado seu projeto do GitHub para o VPS uma vez manualmente)
+            echo ">>> Código atualizado com sucesso via git pull."
+            git pull origin main
+            
+            # --- Adicione seus comandos de build e restart aqui! ---
+            # echo ">>> Compilando o projeto Go..."
+            # go build -o meu_executavel .
+
+            # echo ">>> Reiniciando o serviço da aplicação..."
+            # sudo systemctl restart meu-servico-go.service
