@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -12,10 +11,7 @@ var DB *sql.DB
 
 // InitDB inicializa a conexão com o banco de dados PostgreSQL.
 func InitDB() {
-    connStr := os.Getenv("DATABASE_URL")
-    if connStr == "" {
-        log.Fatal("A variável de ambiente DATABASE_URL não foi definida.")
-    }	
+    connStr := "user=samucael dbname=uniexpo host=72.60.149.222 password=2784 sslmode=disable"
 	var err error
 	DB, err = sql.Open("postgres", connStr)
 	if err != nil {
