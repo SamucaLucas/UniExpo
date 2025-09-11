@@ -76,6 +76,7 @@ func CadastroPage(w http.ResponseWriter, r *http.Request) {
 			Periodo:     periodo,
 			Instagram:   r.FormValue("instagram"),
 			Github:      r.FormValue("github"),
+			Linkedin:      r.FormValue("linkedin"),
 			FotoURL:     r.FormValue("foto_url"),
 			Linguagens:  splitAndTrim(r.FormValue("linguagens")),
 			Frameworks:  splitAndTrim(r.FormValue("frameworks")),

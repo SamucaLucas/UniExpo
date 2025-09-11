@@ -16,6 +16,7 @@ type Aluno struct {
 	Periodo     int
 	Instagram   string
 	Github      string
+	Linkedin	string
 	FotoURL     string
 	Linguagens  []string
 	Frameworks  []string
@@ -63,12 +64,12 @@ func GetAll(periodoFilter int, skillFilter string) ([]Aluno, error) {
 // GetByID busca um único aluno pelo seu ID.
 func GetByID(id int) (Aluno, error) {
 	var a Aluno
-	query := `SELECT id, nome, periodo, instagram, github, foto_url, linguagens, frameworks, ferramentas, bio
+	query := `SELECT id, nome, periodo, instagram, github, foto_url, linguagens, frameworks, ferramentas, bio, linkedin
 			FROM alunos WHERE id = $1`
 
 	err := database.DB.QueryRow(query, id).Scan(
 		&a.ID, &a.Nome, &a.Periodo, &a.Instagram, &a.Github, &a.FotoURL,
-		pq.Array(&a.Linguagens), pq.Array(&a.Frameworks), pq.Array(&a.Ferramentas), &a.Bio,
+		pq.Array(&a.Linguagens), pq.Array(&a.Frameworks), pq.Array(&a.Ferramentas), &a.Bio, &a.Linkedin,
 	)
 	if err == sql.ErrNoRows {
 		return a, fmt.Errorf("aluno com ID %d não encontrado", id)
@@ -78,14 +79,14 @@ func GetByID(id int) (Aluno, error) {
 
 // Create insere um novo aluno no banco de dados.
 func (a *Aluno) Create() error {
-	query := `INSERT INTO alunos (nome, periodo, instagram, github, foto_url, linguagens, frameworks, ferramentas, bio)
-			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+	query := `INSERT INTO alunos (nome, periodo, instagram, github, foto_url, linguagens, frameworks, ferramentas, bio, linkedin)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 			RETURNING id`
 
 	err := database.DB.QueryRow(
 		query,
 		a.Nome, a.Periodo, a.Instagram, a.Github, a.FotoURL,
-		pq.Array(a.Linguagens), pq.Array(a.Frameworks), pq.Array(a.Ferramentas), a.Bio,
+		pq.Array(a.Linguagens), pq.Array(a.Frameworks), pq.Array(a.Ferramentas), a.Bio, a.Linkedin,
 	).Scan(&a.ID)
 
 	return err
