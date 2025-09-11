@@ -34,9 +34,3 @@ jobs:
             echo ">>> Código atualizado com sucesso via git pull."
             git pull origin main
             
-            # --- Adicione seus comandos de build e restart aqui! ---
-            # echo ">>> Compilando o projeto Go..."
-            # go build -o meu_executavel .
-
-            # echo ">>> Reiniciando o serviço da aplicação..."
-            # sudo systemctl restart meu-servico-go.service
