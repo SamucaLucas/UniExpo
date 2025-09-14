@@ -80,3 +80,38 @@ func CadastroProjetoPage(w http.ResponseWriter, r *http.Request) {
         http.Redirect(w, r, "/projetos", http.StatusSeeOther)
     }
 }
+
+func AdicionarAvaliacaoHandler(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodPost {
+        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+        return
+    }
+
+    r.ParseForm()
+    
+    projetoID, _ := strconv.Atoi(r.FormValue("projeto_id"))
+    nota, _ := strconv.Atoi(r.FormValue("nota"))
+
+    avaliacao := modelo.Avaliacao{
+        ProjetoID:     projetoID,
+        Nota:          nota,
+        Comentario:    r.FormValue("comentario"),
+        NomeAvaliador: r.FormValue("nome_avaliador"),
+    }
+    
+    // Validação simples
+    if avaliacao.Nota < 1 || avaliacao.Nota > 5 || avaliacao.ProjetoID == 0 {
+        http.Error(w, "Dados inválidos.", http.StatusBadRequest)
+        return
+    }
+
+    err := modelo.CreateAvaliacao(&avaliacao)
+    if err != nil {
+        log.Printf("Erro ao salvar avaliação: %v", err)
+        http.Error(w, "Erro ao salvar avaliação.", http.StatusInternalServerError)
+        return
+    }
+    
+    // Redireciona de volta para a página do projeto
+    http.Redirect(w, r, "/projeto?id="+strconv.Itoa(projetoID), http.StatusSeeOther)
+}

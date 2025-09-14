@@ -14,4 +14,6 @@ func CarregadoRotas() {
 	http.HandleFunc("/projetos", controle.ProjetosListPage)
 	http.HandleFunc("/projeto", controle.ProjetoDetailPage)
 	http.HandleFunc("/cadastro-projeto", controle.CadastroProjetoPage)
+
+	http.HandleFunc("/adicionar-avaliacao", controle.AdicionarAvaliacaoHandler)
 }

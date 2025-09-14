@@ -4,6 +4,7 @@ package modelo
 import (
 	"log"
 	database "modulo/db"
+	"time"
 )
 
 // MembroEquipe combina dados do aluno com sua função no projeto
@@ -16,12 +17,15 @@ type MembroEquipe struct {
 
 // Projeto armazena todas as informações de um projeto, incluindo a equipe
 type Projeto struct {
-    ID          int
-    Titulo      string
-    Descricao   string
-    ImagemURL   string
-    LinkProjeto string
-    Equipe      []MembroEquipe // Uma lista de membros
+    ID              int
+    Titulo          string
+    Descricao       string
+    ImagemURL       string
+    LinkProjeto     string
+    Equipe          []MembroEquipe 
+    Avaliacoes      []Avaliacao    // <-- NOVO CAMPO
+    NotaMedia       float64        // <-- NOVO CAMPO
+    TotalAvaliacoes int            // <-- NOVO CAMPO
 }
 
 // ---- Funções de Interação com o Banco de Dados ----
@@ -42,18 +46,31 @@ func GetProjetoByID(id int) (Projeto, error) {
                     JOIN equipe_projetos ep ON a.id = ep.aluno_id
                     WHERE ep.projeto_id = $1`
     rows, err := database.DB.Query(queryEquipe, id)
+    // Busca a média das notas e o total de avaliações
+    queryMedia := `SELECT COALESCE(AVG(nota), 0), COUNT(nota) FROM avaliacoes WHERE projeto_id = $1`
+    err = database.DB.QueryRow(queryMedia, id).Scan(&p.NotaMedia, &p.TotalAvaliacoes)
+    if err != nil {
+        return p, err
+    }
+
+    // Busca todas as avaliações individuais
+    queryAvaliacoes := `SELECT id, nota, comentario, nome_avaliador, created_at 
+                        FROM avaliacoes 
+                        WHERE projeto_id = $1 ORDER BY created_at DESC`
+    rows, err = database.DB.Query(queryAvaliacoes, id)
     if err != nil {
         return p, err
     }
     defer rows.Close()
 
     for rows.Next() {
-        var membro MembroEquipe
-        if err := rows.Scan(&membro.AlunoID, &membro.Nome, &membro.FotoURL, &membro.Funcao); err != nil {
-            continue // Pula membros com erro
+        var a Avaliacao
+        if err := rows.Scan(&a.ID, &a.Nota, &a.Comentario, &a.NomeAvaliador, &a.CreatedAt); err != nil {
+            continue
         }
-        p.Equipe = append(p.Equipe, membro)
+        p.Avaliacoes = append(p.Avaliacoes, a)
     }
+
     return p, nil
 }
 
@@ -150,4 +167,22 @@ func CreateProjeto(projeto *Projeto, equipe []MembroEquipe) error {
 
     // 3. Se tudo correu bem, confirma a transação (COMMIT)
     return tx.Commit()
+}
+
+type Avaliacao struct {
+    ID             int
+    ProjetoID      int
+    Nota           int
+    Comentario     string
+    NomeAvaliador  string
+    CreatedAt      time.Time
+}
+
+// CreateAvaliacao salva uma nova avaliação no banco de dados.
+func CreateAvaliacao(avaliacao *Avaliacao) error {
+    query := `INSERT INTO avaliacoes (projeto_id, nota, comentario, nome_avaliador)
+            VALUES ($1, $2, $3, $4)`
+    
+    _, err := database.DB.Exec(query, avaliacao.ProjetoID, avaliacao.Nota, avaliacao.Comentario, avaliacao.NomeAvaliador)
+    return err
 }
