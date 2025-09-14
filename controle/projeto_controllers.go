@@ -51,11 +51,11 @@ func CadastroProjetoPage(w http.ResponseWriter, r *http.Request) {
             LinkProjeto: r.FormValue("link_projeto"),
         }
 
-        // 2. Cria a lista de membros da equipe
         var equipe []modelo.MembroEquipe
-        // O formulário enviará os IDs e funções como listas (slices)
-        alunoIDs := r.Form["aluno_id"]
-        funcoes := r.Form["funcao"]
+		// O formulário enviará os IDs e funções como listas (slices)
+		// CORREÇÃO: Usamos o nome exato que está no HTML, incluindo "[]"
+		alunoIDs := r.Form["aluno_id[]"]
+		funcoes := r.Form["funcao[]"]
 
         // Garante que temos a mesma quantidade de IDs e funções
         if len(alunoIDs) == len(funcoes) {
