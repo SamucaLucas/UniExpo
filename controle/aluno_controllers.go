@@ -1,8 +1,6 @@
-// internal/controllers/aluno_controller.go
-package controllers
+package controle
 
 import (
-	"html/template"
 	"log"
 	models "modulo/modelo"
 	"net/http"
@@ -10,19 +8,8 @@ import (
 	"strings"
 )
 
-var funcMap = template.FuncMap{
-	// a função "add" soma dois números
-	"add": func(a, b int) int {
-		return a + b
-	},
-	// a função "loop" cria uma fatia para usarmos no range
-	"loop": func(n int) []int {
-		return make([]int, n)
-	},
-}
-
 // 2. Carregamos os templates e injetamos nossas funções com .Funcs(funcMap)
-var templates = template.Must(template.New("").Funcs(funcMap).ParseGlob("templete/*.html"))
+
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	periodoFilter, _ := strconv.Atoi(r.URL.Query().Get("periodo"))

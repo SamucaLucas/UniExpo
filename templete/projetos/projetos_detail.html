@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+
+<head>
+    <title>Detalhes de {{.Titulo}}</title>
+</head>
+
+<body>
+    <div class="container my-5">
+        <a href="/projetos" class="btn btn-outline-secondary mb-4">&larr; Voltar para todos os projetos</a>
+
+        <div class="p-4 p-md-5 rounded-3" style="background-color: var(--cor-fundo-card);">
+            <h1 class="titulo-gradiente display-5">{{.Titulo}}</h1>
+            <p class="lead mt-3">{{.Descricao}}</p>
+            {{if .LinkProjeto}}
+            <a href="{{.LinkProjeto}}" target="_blank" class="btn btn-gradiente">Ver Projeto Online</a> {{end}}
+
+            <hr class="my-5">
+
+            <h3 class="mb-4 text-light">Equipe Desenvolvedora</h3>
+            <div class="row g-4">
+                {{range .Equipe}}
+                <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                        <a href="/aluno?id={{.AlunoID}}">
+                            <img src="{{.FotoURL}}" class="rounded-circle me-3" width="60" height="60" alt="Foto de {{.Nome}}">
+                        </a>
+                        <div>
+                            <h5 class="mb-0 text-light">
+                                <a href="/aluno?id={{.AlunoID}}" class="text-decoration-none text-light">{{.Nome}}</a>
+                            </h5>
+                            <span class="badge bg-primary">{{.Funcao}}</span>
+                        </div>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

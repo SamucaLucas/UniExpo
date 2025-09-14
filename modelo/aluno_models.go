@@ -1,5 +1,4 @@
-// internal/models/aluno.go
-package models
+package modelo
 
 import (
 	"database/sql"

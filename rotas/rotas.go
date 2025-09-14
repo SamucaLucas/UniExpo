@@ -1,13 +1,16 @@
 package routers
 
 import (
-	controllers "modulo/controle"
+	controle "modulo/controle"
 	"net/http"
 )
 
 func CarregadoRotas() {
 	// Nossas rotas usando os controllers
-	http.HandleFunc("/", controllers.HomePage)
-	http.HandleFunc("/aluno", controllers.AlunoPage)
-	http.HandleFunc("/cadastro", controllers.CadastroPage)
+	http.HandleFunc("/", controle.HomePage)
+	http.HandleFunc("/aluno", controle.AlunoPage)
+	http.HandleFunc("/cadastro", controle.CadastroPage)
+
+	http.HandleFunc("/projetos", controle.ProjetosListPage)
+	http.HandleFunc("/projeto", controle.ProjetoDetailPage)
 }
