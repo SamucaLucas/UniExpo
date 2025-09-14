@@ -57,32 +57,102 @@
     </div>
 
     <script>
-        document.getElementById('add-membro').addEventListener('click', function() {
-            const container = document.getElementById('equipe-container');
+        const container = document.getElementById('equipe-container');
+        const addMembroBtn = document.getElementById('add-membro');
+
+        // --- CORREÇÃO NESTE BLOCO ---
+        // Armazena a lista de todos os alunos que o Go passou para o template
+        const todosAlunos = [{
+                {
+                    range $index, $aluno: = .
+                }
+            } {
+                {
+                    if $index
+                }
+            }, {
+                {
+                    end
+                }
+            } // Adiciona a vírgula
+            {
+                id: {
+                    {
+                        $aluno.ID
+                    }
+                },
+                nome: "{{$aluno.Nome}}"
+            } {
+                {
+                    end
+                }
+            }
+        ];
+        // --- FIM DA CORREÇÃO ---
+
+        function atualizarOpcoesDisponiveis() {
+            // 1. Encontra todos os IDs de alunos que já foram selecionados
+            const selects = container.querySelectorAll('select[name="aluno_id[]"]');
+            const idsSelecionados = [];
+            selects.forEach(select => {
+                if (select.value !== "0") {
+                    idsSelecionados.push(parseInt(select.value));
+                }
+            });
+
+            // 2. Itera em cada select para atualizar suas opções
+            selects.forEach(selectAtual => {
+                const valorAtual = parseInt(selectAtual.value);
+                // Itera em cada <option> dentro do select atual
+                selectAtual.querySelectorAll('option').forEach(option => {
+                    const optionValue = parseInt(option.value);
+                    if (optionValue === 0) return; // Ignora a opção "Selecione..."
+
+                    // Se o valor da opção já foi selecionado em OUTRO select, desabilita
+                    if (idsSelecionados.includes(optionValue) && optionValue !== valorAtual) {
+                        option.disabled = true;
+                    } else {
+                        option.disabled = false;
+                    }
+                });
+            });
+        }
+
+        function removerMembro(botao) {
+            botao.parentElement.parentElement.remove();
+            atualizarOpcoesDisponiveis(); // Reabilita a opção do membro removido
+        }
+
+        addMembroBtn.addEventListener('click', function() {
             const membroDiv = document.createElement('div');
             membroDiv.className = 'row g-3 mb-3 align-items-center';
 
+            let optionsHTML = '<option value="0" selected>Selecione um Aluno...</option>';
+            todosAlunos.forEach(aluno => {
+                optionsHTML += `<option value="${aluno.id}">${aluno.nome}</option>`;
+            });
+
             membroDiv.innerHTML = `
-                <div class="col-sm-6">
-                    <select class="form-select" name="aluno_id[]" required>
-                        <option value="0" selected>Selecione um Aluno...</option>
-                        {{range .}}
-                        <option value="{{.ID}}">{{.Nome}}</option>
-                        {{end}}
-                    </select>
-                </div>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" name="funcao[]" placeholder="Função no projeto (ex: Backend)" required>
-                </div>
-                <div class="col-sm-1">
-                    <button type="button" class="btn btn-danger btn-sm w-100" onclick="this.parentElement.parentElement.remove()">X</button>
-                </div>
-            `;
+            <div class="col-sm-6">
+                <select class="form-select" name="aluno_id[]" required onchange="atualizarOpcoesDisponiveis()">
+                    ${optionsHTML}
+                </select>
+            </div>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" name="funcao[]" placeholder="Função no projeto (ex: Backend)" required>
+            </div>
+            <div class="col-sm-1">
+                <button type="button" class="btn btn-danger btn-sm w-100" onclick="removerMembro(this)">X</button>
+            </div>
+        `;
             container.appendChild(membroDiv);
+            atualizarOpcoesDisponiveis();
         });
 
-        // Adiciona o primeiro membro automaticamente ao carregar a página
-        document.getElementById('add-membro').click();
+        // Inicia com um membro ao carregar a página
+        if (document.getElementById('equipe-container').children.length === 0) {
+            addMembroBtn.click();
+        }
     </script>
 </body>
 

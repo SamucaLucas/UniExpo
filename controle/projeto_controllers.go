@@ -57,6 +57,19 @@ func CadastroProjetoPage(w http.ResponseWriter, r *http.Request) {
 		alunoIDs := r.Form["aluno_id[]"]
 		funcoes := r.Form["funcao[]"]
 
+		// --- VALIDAÇÃO DE DUPLICATAS ---
+		idsUtilizados := make(map[string]bool)
+		for _, id := range alunoIDs {
+			if id == "0" { continue } // Ignora a opção "Selecione..."
+			if idsUtilizados[id] {
+				// Erro! Encontramos um ID duplicado
+				// TODO: Recarregar a página de formulário com uma mensagem de erro
+				http.Error(w, "Não é permitido adicionar o mesmo aluno duas vezes na equipe.", http.StatusBadRequest)
+				return
+			}
+			idsUtilizados[id] = true
+		}
+
         // Garante que temos a mesma quantidade de IDs e funções
         if len(alunoIDs) == len(funcoes) {
             for i, idStr := range alunoIDs {
