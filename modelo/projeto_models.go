@@ -76,7 +76,25 @@ func GetProjetoByID(id int) (Projeto, error) {
 
 // GetAllProjetos busca todos os projetos (sem detalhes da equipe, para a lista principal)
 func GetAllProjetos() ([]Projeto, error) {
-    query := `SELECT id, titulo, descricao, imagem_url FROM projetos ORDER BY created_at DESC`
+    // Esta query usa LEFT JOIN para incluir projetos mesmo que não tenham nenhuma avaliação.
+    // COALESCE(AVG(a.nota), 0) garante que a nota média seja 0 em vez de nula se não houver avaliações.
+    query := `
+        SELECT
+            p.id,
+            p.titulo,
+            p.descricao,
+            p.imagem_url,
+            COALESCE(AVG(a.nota), 0) as nota_media,
+            COUNT(a.nota) as total_avaliacoes
+        FROM
+            projetos p
+        LEFT JOIN
+            avaliacoes a ON p.id = a.projeto_id
+        GROUP BY
+            p.id
+        ORDER BY
+            nota_media DESC, p.created_at DESC`
+
     rows, err := database.DB.Query(query)
     if err != nil {
         return nil, err
@@ -86,7 +104,9 @@ func GetAllProjetos() ([]Projeto, error) {
     var projetos []Projeto
     for rows.Next() {
         var p Projeto
-        if err := rows.Scan(&p.ID, &p.Titulo, &p.Descricao, &p.ImagemURL); err != nil {
+        // O Scan deve seguir a ordem exata das colunas no SELECT
+        if err := rows.Scan(&p.ID, &p.Titulo, &p.Descricao, &p.ImagemURL, &p.NotaMedia, &p.TotalAvaliacoes); err != nil {
+            log.Println("Erro ao escanear projeto:", err)
             continue
         }
         projetos = append(projetos, p)
