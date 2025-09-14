@@ -58,8 +58,8 @@
         <input type="hidden" name="projeto_id" value="{{.ID}}">
         <div class="row g-3">
             <div class="col-md-6 mb-3">
-                <label for="nome_avaliador" class="form-label">Seu Nome (Opcional)</label>
-                <input type="text" class="form-control" name="nome_avaliador" id="nome_avaliador">
+                <label for="nome_avaliador" class="form-label">Seu Nome</label>
+                <input type="text" class="form-control" name="nome_avaliador" id="nome_avaliador" required>
             </div>
             <div class="col-md-6 mb-3">
                 <label for="nota" class="form-label">Sua Nota (1 a 5)</label>
@@ -89,7 +89,7 @@
         {{range .Avaliacoes}}
         <div class="card card-custom mb-3">
             <div class="card-body">
-                <h5 class="card-title text-light">{{.NomeAvaliador | default "Anônimo"}}</h5>
+                <h5 class="card-title text-light">{{.NomeAvaliador}}</h5>
                 <h6 class="card-subtitle mb-2 text-warning">Nota: {{.Nota}} de 5</h6>
                 <p class="card-text">{{.Comentario}}</p>
                 <small class="text-muted">{{.CreatedAt.Format "02/01/2006 às 15:04"}}</small>

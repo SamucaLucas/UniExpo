@@ -5,6 +5,7 @@ import (
 	"modulo/modelo"
 	"net/http"
 	"strconv"
+	"strings"
 	// ... seus imports
 )
 
@@ -91,19 +92,26 @@ func AdicionarAvaliacaoHandler(w http.ResponseWriter, r *http.Request) {
     
     projetoID, _ := strconv.Atoi(r.FormValue("projeto_id"))
     nota, _ := strconv.Atoi(r.FormValue("nota"))
+	nomeAvaliador := strings.TrimSpace(r.FormValue("nome_avaliador"))
 
     avaliacao := modelo.Avaliacao{
         ProjetoID:     projetoID,
         Nota:          nota,
         Comentario:    r.FormValue("comentario"),
-        NomeAvaliador: r.FormValue("nome_avaliador"),
+		NomeAvaliador: nomeAvaliador,
+    
     }
     
     // Validação simples
     if avaliacao.Nota < 1 || avaliacao.Nota > 5 || avaliacao.ProjetoID == 0 {
-        http.Error(w, "Dados inválidos.", http.StatusBadRequest)
-        return
-    }
+    http.Error(w, "Dados de nota ou projeto inválidos.", http.StatusBadRequest)
+    return
+	}
+	// NOVA VERIFICAÇÃO para o nome
+	if avaliacao.NomeAvaliador == "" {
+		http.Error(w, "O campo 'Nome' é obrigatório.", http.StatusBadRequest)
+		return
+	}
 
     err := modelo.CreateAvaliacao(&avaliacao)
     if err != nil {
