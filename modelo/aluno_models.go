@@ -1,7 +1,6 @@
 package modelo
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	database "modulo/db"
@@ -21,6 +20,7 @@ type Aluno struct {
 	Frameworks  []string
 	Ferramentas []string
 	Bio         string
+	ProjetosParticipa []Projeto
 }
 
 // GetAll busca todos os alunos no banco de dados, com filtros.
@@ -62,18 +62,47 @@ func GetAll(periodoFilter int, skillFilter string) ([]Aluno, error) {
 
 // GetByID busca um único aluno pelo seu ID.
 func GetByID(id int) (Aluno, error) {
-	var a Aluno
-	query := `SELECT id, nome, periodo, instagram, github, foto_url, linguagens, frameworks, ferramentas, bio, linkedin
-			FROM alunos WHERE id = $1`
+    var a Aluno
 
-	err := database.DB.QueryRow(query, id).Scan(
-		&a.ID, &a.Nome, &a.Periodo, &a.Instagram, &a.Github, &a.FotoURL,
-		pq.Array(&a.Linguagens), pq.Array(&a.Frameworks), pq.Array(&a.Ferramentas), &a.Bio, &a.Linkedin,
-	)
-	if err == sql.ErrNoRows {
-		return a, fmt.Errorf("aluno com ID %d não encontrado", id)
-	}
-	return a, err
+    // PARTE 1: Busca os dados principais do aluno (como já fazia antes)
+    queryAluno := `SELECT id, nome, periodo, instagram, github, linkedin, foto_url, linguagens, frameworks, ferramentas, bio
+                FROM alunos WHERE id = $1`
+
+    err := database.DB.QueryRow(queryAluno, id).Scan(
+        &a.ID, &a.Nome, &a.Periodo, &a.Instagram, &a.Github, &a.Linkedin, &a.FotoURL,
+        pq.Array(&a.Linguagens), pq.Array(&a.Frameworks), pq.Array(&a.Ferramentas), &a.Bio,
+    )
+    if err != nil {
+        return a, err
+    }
+
+    // PARTE 2 (NOVA): Busca os projetos associados a este aluno
+    queryProjetos := `SELECT p.id, p.titulo, p.imagem_url
+                    FROM projetos p
+                    JOIN equipe_projetos ep ON p.id = ep.projeto_id
+                    WHERE ep.aluno_id = $1`
+
+    rows, err := database.DB.Query(queryProjetos, id)
+    if err != nil {
+        // Se der erro aqui, não quebra a página, apenas logamos o erro.
+        // O perfil do aluno ainda será exibido, mas sem os projetos.
+        log.Printf("Erro ao buscar projetos do aluno %d: %v", id, err)
+        return a, nil // Retornamos 'nil' para o erro, pois os dados principais do aluno foram carregados
+    }
+    defer rows.Close()
+
+    // Itera sobre os resultados da busca de projetos
+    for rows.Next() {
+        var p Projeto // Usamos a struct Projeto, mas só preenchemos alguns campos
+        if err := rows.Scan(&p.ID, &p.Titulo, &p.ImagemURL); err != nil {
+            log.Println("Erro ao escanear projeto do aluno:", err)
+            continue
+        }
+        // Adiciona o projeto encontrado à lista de projetos do aluno
+        a.ProjetosParticipa = append(a.ProjetosParticipa, p)
+    }
+
+    return a, nil
 }
 
 // Create insere um novo aluno no banco de dados.

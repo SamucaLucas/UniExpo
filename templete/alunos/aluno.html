@@ -71,6 +71,28 @@
                             {{range .Ferramentas}}<span class="badge rounded-pill bg-primary me-1 mb-1 p-2">{{.}}</span>{{end}}
                         </div>
                     </div>
+
+                    <hr class="my-5" style="border-color: var(--cor-borda);">
+
+                    <div>
+                        <h3 class="mb-4 text-light">Projetos em Destaque</h3>
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                            {{range .ProjetosParticipa}}
+                            <div class="col">
+                                <a href="/projeto?id={{.ID}}" class="card h-100 shadow-sm card-custom">
+                                    <img src="{{.ImagemURL}}" class="card-img-top" alt="Imagem do projeto {{.Titulo}}" style="aspect-ratio: 16/9; object-fit: cover;">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-light mb-0">{{.Titulo}}</h5>
+                                    </div>
+                                </a>
+                            </div>
+                            {{else}}
+                            <div class="col">
+                                <p class="text-muted">Este aluno ainda não está participando de nenhum projeto cadastrado.</p>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
