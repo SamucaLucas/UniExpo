@@ -22,27 +22,27 @@
                 <div class="p-4 p-md-5 rounded-3" style="background-color: var(--cor-fundo-card);">
                     <form action="/cadastro-projeto" method="post">
                         <div class="mb-4">
-                            <label for="titulo" class="form-label">Título do Projeto</label>
+                            <label for="titulo" class="form-label">*Título do Projeto</label>
                             <input type="text" class="form-control" id="titulo" name="titulo" required>
                         </div>
                         <div class="mb-4">
-                            <label for="descricao" class="form-label">Descrição Completa</label>
+                            <label for="descricao" class="form-label">*Descrição Completa</label>
                             <textarea class="form-control" id="descricao" name="descricao" rows="5" required></textarea>
                         </div>
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
-                                <label for="imagem_url" class="form-label">URL de uma Imagem do Projeto</label>
-                                <input type="text" class="form-control" id="imagem_url" name="imagem_url">
+                                <label for="imagem_url" class="form-label">*URL de uma Imagem do Projeto</label>
+                                <input type="text" class="form-control" id="imagem_url" name="imagem_url" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="link_projeto" class="form-label">Link para o Projeto (GitHub, Site)</label>
+                                <label for="link_projeto" class="form-label">Link para o Projeto (Site)</label>
                                 <input type="text" class="form-control" id="link_projeto" name="link_projeto">
                             </div>
                         </div>
 
                         <hr class="my-4">
 
-                        <h4 class="mb-3">Membros da Equipe</h4>
+                        <h4 class="mb-3">*Membros da Equipe</h4>
                         <div id="equipe-container">
                         </div>
                         <button type="button" id="add-membro" class="btn btn-outline-success mt-2">Adicionar Membro</button>

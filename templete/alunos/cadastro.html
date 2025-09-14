@@ -26,12 +26,12 @@
                     <form action="/cadastro" method="post">
 
                         <div class="mb-4">
-                            <label for="nome" class="form-label">Nome Completo</label>
+                            <label for="nome" class="form-label">*Nome Completo</label>
                             <input type="text" class="form-control" id="nome" name="nome" required>
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label d-block">Período</label>
+                            <label class="form-label d-block">*Período</label>
                             <div class="btn-group w-100" role="group" aria-label="Seleção de período">
                                 {{range $i, $_ := loop 6}} {{$periodo := add $i 1}}
                                 <input type="radio" class="btn-check" name="periodo" id="periodo{{$periodo}}" value="{{$periodo}}" autocomplete="off" required>
@@ -41,22 +41,22 @@
 
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
-                                <label for="instagram" class="form-label">Usuário do Instagram (Opcional)</label>
+                                <label for="instagram" class="form-label">Nome de Usuário do Instagram (Sem @) (Opcional)</label>
                                 <input type="text" id="instagram" name="instagram" class="form-control">
                             </div>
                             <div class="col-md-6">
-                                <label for="github" class="form-label">Usuário do GitHub</label>
+                                <label for="github" class="form-label">*Nome de Usuário do GitHub</label>
                                 <input type="text" class="form-control" id="github" name="github" required>
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="linkedin" class="form-label">Link do Linkdin</label>
+                            <label for="linkedin" class="form-label">*Link do Linkdin</label>
                             <input type="text" class="form-control" id="linkedin" name="linkedin" required>
                         </div>
 
                         <div class="mb-4">
-                            <label for="foto_url" class="form-label">URL da sua Foto</label>
+                            <label for="foto_url" class="form-label">*URL da sua Foto (Pública)</label>
                             <input type="text" class="form-control" id="foto_url" name="foto_url" placeholder="Link para uma foto de perfil pública" required>
                         </div>
 
