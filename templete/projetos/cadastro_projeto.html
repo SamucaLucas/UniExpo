@@ -60,8 +60,8 @@
         const container = document.getElementById('equipe-container');
         const addMembroBtn = document.getElementById('add-membro');
 
-        // --- CORREÇÃO NESTE BLOCO ---
-        // Armazena a lista de todos os alunos que o Go passou para o template
+        // PARTE 1: O Go cria um array JavaScript com os dados dos alunos.
+        // A variável "$aluno" só existe e é usada aqui dentro.
         const todosAlunos = [{
                 {
                     range $index, $aluno: = .
@@ -88,10 +88,11 @@
                 }
             }
         ];
-        // --- FIM DA CORREÇÃO ---
+
+        // PARTE 2: O JavaScript puro usa o array "todosAlunos" para manipular o HTML.
+        // Note que não há mais código do Go (com "{{...}}") daqui para baixo.
 
         function atualizarOpcoesDisponiveis() {
-            // 1. Encontra todos os IDs de alunos que já foram selecionados
             const selects = container.querySelectorAll('select[name="aluno_id[]"]');
             const idsSelecionados = [];
             selects.forEach(select => {
@@ -100,15 +101,12 @@
                 }
             });
 
-            // 2. Itera em cada select para atualizar suas opções
             selects.forEach(selectAtual => {
                 const valorAtual = parseInt(selectAtual.value);
-                // Itera em cada <option> dentro do select atual
                 selectAtual.querySelectorAll('option').forEach(option => {
                     const optionValue = parseInt(option.value);
-                    if (optionValue === 0) return; // Ignora a opção "Selecione..."
+                    if (optionValue === 0) return;
 
-                    // Se o valor da opção já foi selecionado em OUTRO select, desabilita
                     if (idsSelecionados.includes(optionValue) && optionValue !== valorAtual) {
                         option.disabled = true;
                     } else {
@@ -120,7 +118,7 @@
 
         function removerMembro(botao) {
             botao.parentElement.parentElement.remove();
-            atualizarOpcoesDisponiveis(); // Reabilita a opção do membro removido
+            atualizarOpcoesDisponiveis();
         }
 
         addMembroBtn.addEventListener('click', function() {
@@ -128,6 +126,7 @@
             membroDiv.className = 'row g-3 mb-3 align-items-center';
 
             let optionsHTML = '<option value="0" selected>Selecione um Aluno...</option>';
+            // O loop agora é feito com "forEach" do JavaScript, na variável "todosAlunos"
             todosAlunos.forEach(aluno => {
                 optionsHTML += `<option value="${aluno.id}">${aluno.nome}</option>`;
             });
