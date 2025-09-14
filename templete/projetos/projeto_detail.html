@@ -41,29 +41,27 @@
                 {{end}}
             </div>
         </div>
-    </div>
-
-    <div class="d-flex align-items-center mb-4">
-        <h4 class="mb-0 me-3">Avaliação Média:</h4>
-        <div>
-            <span class="badge bg-warning text-dark fs-5">{{printf "%.1f" .NotaMedia}} / 5</span>
-            <span class="text-muted ms-2"> ({{.TotalAvaliacoes}} avaliações)</span>
-        </div>
-    </div>
-
-    <hr class="my-5">
-
-    <h3 class="mb-4 text-light">Deixe sua Avaliação</h3>
-    <form action="/adicionar-avaliacao" method="post" class="mb-5">
-        <input type="hidden" name="projeto_id" value="{{.ID}}">
-        <div class="row g-3">
-            <div class="col-md-6 mb-3">
-                <label for="nome_avaliador" class="form-label">Seu Nome</label>
-                <input type="text" class="form-control" name="nome_avaliador" id="nome_avaliador" required>
+        <div class="d-flex align-items-center mb-4">
+            <h4 class="mb-0 me-3">Avaliação Média:</h4>
+            <div>
+                <span class="badge bg-warning text-dark fs-5">{{printf "%.1f" .NotaMedia}} / 5</span>
+                <span class="text-muted ms-2"> ({{.TotalAvaliacoes}} avaliações)</span>
             </div>
-            <div class="col-md-6 mb-3">
-                <label for="nota" class="form-label">Sua Nota (1 a 5)</label>
-                <select name="nota" id="nota" class="form-select" required>
+        </div>
+
+        <hr class="my-5">
+
+        <h3 class="mb-4 text-light">Deixe sua Avaliação</h3>
+        <form action="/adicionar-avaliacao" method="post" class="mb-5">
+            <input type="hidden" name="projeto_id" value="{{.ID}}">
+            <div class="row g-3">
+                <div class="col-md-6 mb-3">
+                    <label for="nome_avaliador" class="form-label">Seu Nome</label>
+                    <input type="text" class="form-control" name="nome_avaliador" id="nome_avaliador" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="nota" class="form-label">Sua Nota (1 a 5)</label>
+                    <select name="nota" id="nota" class="form-select" required>
                 <option value="" disabled selected>Escolha uma nota...</option>
                 <option value="5">5 - Excelente</option>
                 <option value="4">4 - Muito Bom</option>
@@ -71,34 +69,37 @@
                 <option value="2">2 - Razoável</option>
                 <option value="1">1 - Ruim</option>
             </select>
+                </div>
+                <div class="col-12 mb-3">
+                    <label for="comentario" class="form-label">Seu Comentário (Opcional)</label>
+                    <textarea name="comentario" id="comentario" rows="3" class="form-control"></textarea>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-gradiente">Enviar Avaliação</button>
+                </div>
             </div>
-            <div class="col-12 mb-3">
-                <label for="comentario" class="form-label">Seu Comentário (Opcional)</label>
-                <textarea name="comentario" id="comentario" rows="3" class="form-control"></textarea>
-            </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-gradiente">Enviar Avaliação</button>
-            </div>
-        </div>
-    </form>
+        </form>
 
-    <hr class="my-5">
+        <hr class="my-5">
 
-    <h3 class="mb-4 text-light">O que os Visitantes Estão Dizendo</h3>
-    <div>
-        {{range .Avaliacoes}}
-        <div class="card card-custom mb-3">
-            <div class="card-body">
-                <h5 class="card-title text-light">{{.NomeAvaliador}}</h5>
-                <h6 class="card-subtitle mb-2 text-warning">Nota: {{.Nota}} de 5</h6>
-                <p class="card-text">{{.Comentario}}</p>
-                <small class="text-muted">{{.CreatedAt.Format "02/01/2006 às 15:04"}}</small>
+        <h3 class="mb-4 text-light">O que os Visitantes Estão Dizendo</h3>
+        <div>
+            {{range .Avaliacoes}}
+            <div class="card card-custom mb-3">
+                <div class="card-body">
+                    <h5 class="card-title text-light">{{.NomeAvaliador}}</h5>
+                    <h6 class="card-subtitle mb-2 text-warning">Nota: {{.Nota}} de 5</h6>
+                    <p class="card-text">{{.Comentario}}</p>
+                    <small class="text-muted">{{.CreatedAt.Format "02/01/2006 às 15:04"}}</small>
+                </div>
             </div>
+            {{else}}
+            <p class="text-muted">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>
+            {{end}}
         </div>
-        {{else}}
-        <p class="text-muted">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>
-        {{end}}
     </div>
+
+
 
 </body>
 
