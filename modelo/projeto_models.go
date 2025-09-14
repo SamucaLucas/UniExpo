@@ -33,42 +33,67 @@ type Projeto struct {
 // GetProjetoByID busca um projeto e sua equipe
 func GetProjetoByID(id int) (Projeto, error) {
     var p Projeto
-    // Primeiro, busca os dados do projeto
+
+    // --- PARTE 1: Busca os dados principais do projeto ---
     queryProjeto := `SELECT id, titulo, descricao, imagem_url, link_projeto FROM projetos WHERE id = $1`
     err := database.DB.QueryRow(queryProjeto, id).Scan(&p.ID, &p.Titulo, &p.Descricao, &p.ImagemURL, &p.LinkProjeto)
     if err != nil {
         return p, err
     }
 
-    // Depois, busca os membros da equipe
+    // --- PARTE 2: Busca os membros da equipe ---
     queryEquipe := `SELECT a.id, a.nome, a.foto_url, ep.funcao
                     FROM alunos a
                     JOIN equipe_projetos ep ON a.id = ep.aluno_id
                     WHERE ep.projeto_id = $1`
-    rows, err := database.DB.Query(queryEquipe, id)
-    // Busca a média das notas e o total de avaliações
+    rowsEquipe, err := database.DB.Query(queryEquipe, id)
+    if err != nil {
+        return p, err
+    }
+    defer rowsEquipe.Close()
+
+    for rowsEquipe.Next() {
+        var membro MembroEquipe
+        if err := rowsEquipe.Scan(&membro.AlunoID, &membro.Nome, &membro.FotoURL, &membro.Funcao); err != nil {
+            log.Println("Erro ao escanear membro da equipe:", err)
+            continue
+        }
+        p.Equipe = append(p.Equipe, membro)
+    }
+    // Verifica se ocorreu um erro durante a iteração do loop da equipe
+    if err = rowsEquipe.Err(); err != nil {
+        return p, err
+    }
+
+
+    // --- PARTE 3: Busca as avaliações e calcula a média ---
     queryMedia := `SELECT COALESCE(AVG(nota), 0), COUNT(nota) FROM avaliacoes WHERE projeto_id = $1`
+    // Usamos "=" aqui para reatribuir à variável 'err' já existente
     err = database.DB.QueryRow(queryMedia, id).Scan(&p.NotaMedia, &p.TotalAvaliacoes)
     if err != nil {
         return p, err
     }
 
-    // Busca todas as avaliações individuais
     queryAvaliacoes := `SELECT id, nota, comentario, nome_avaliador, created_at 
                         FROM avaliacoes 
                         WHERE projeto_id = $1 ORDER BY created_at DESC`
-    rows, err = database.DB.Query(queryAvaliacoes, id)
+    rowsAvaliacoes, err := database.DB.Query(queryAvaliacoes, id)
     if err != nil {
         return p, err
     }
-    defer rows.Close()
+    defer rowsAvaliacoes.Close()
 
-    for rows.Next() {
+    for rowsAvaliacoes.Next() {
         var a Avaliacao
-        if err := rows.Scan(&a.ID, &a.Nota, &a.Comentario, &a.NomeAvaliador, &a.CreatedAt); err != nil {
+        if err := rowsAvaliacoes.Scan(&a.ID, &a.Nota, &a.Comentario, &a.NomeAvaliador, &a.CreatedAt); err != nil {
+            log.Println("Erro ao escanear avaliação:", err)
             continue
         }
         p.Avaliacoes = append(p.Avaliacoes, a)
+    }
+    // Verifica se ocorreu um erro durante a iteração do loop de avaliações
+    if err = rowsAvaliacoes.Err(); err != nil {
+        return p, err
     }
 
     return p, nil
