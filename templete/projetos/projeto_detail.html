@@ -4,8 +4,9 @@
 <head>
     <title>Detalhes de {{.Titulo}}</title>
 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/static/img/favicon.png">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
@@ -15,11 +16,14 @@
     <div class="container my-5">
         <a href="/projetos" class="btn btn-outline-secondary mb-4">&larr; Voltar para todos os projetos</a>
 
-        <div class="p-4 p-md-5 rounded-3" style="background-color: var(--cor-fundo-card);">
+        <div class="p-4 p-md-5 rounded-3 mb-5" style="background-color: var(--cor-fundo-card);">
             <h1 class="titulo-gradiente display-5">{{.Titulo}}</h1>
             <p class="lead mt-3">{{.Descricao}}</p>
             {{if .LinkProjeto}}
-            <a href="{{.LinkProjeto}}" target="_blank" class="btn btn-gradiente">Ver Projeto Online</a> {{end}}
+            <a href="{{.LinkProjeto}}" target="_blank" class="btn btn-gradiente">
+                <i class="bi bi-box-arrow-up-right me-2"></i>Ver Projeto Online
+            </a>
+            {{end}}
 
             <hr class="my-5">
 
@@ -43,66 +47,77 @@
             </div>
         </div>
 
-        <div class="d-flex align-items-center mb-4">
-            <h4 class="mb-0 me-3">Avaliação Média:</h4>
-            <div>
-                <span class="badge bg-warning text-dark fs-5">{{printf "%.1f" .NotaMedia}} / 5</span>
-                <span class="text-muted ms-2"> ({{.TotalAvaliacoes}} avaliações)</span>
-            </div>
-        </div>
-
-        <hr class="my-5">
-
-        <h3 class="mb-4 text-light">Deixe sua Avaliação</h3>
-        <form action="/adicionar-avaliacao" method="post" class="mb-5">
-            <input type="hidden" name="projeto_id" value="{{.ID}}">
-            <div class="row g-3">
-                <div class="col-md-6 mb-3">
-                    <label for="nome_avaliador" class="form-label">Seu Nome</label>
-                    <input type="text" class="form-control" name="nome_avaliador" id="nome_avaliador" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="nota" class="form-label">Sua Nota (1 a 5)</label>
-                    <select name="nota" id="nota" class="form-select" required>
-                <option value="" disabled selected>Escolha uma nota...</option>
-                <option value="5">5 - Excelente</option>
-                <option value="4">4 - Muito Bom</option>
-                <option value="3">3 - Bom</option>
-                <option value="2">2 - Razoável</option>
-                <option value="1">1 - Ruim</option>
-            </select>
-                </div>
-                <div class="col-12 mb-3">
-                    <label for="comentario" class="form-label">Seu Comentário (Opcional)</label>
-                    <textarea name="comentario" id="comentario" rows="3" class="form-control"></textarea>
-                </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-gradiente">Enviar Avaliação</button>
-                </div>
-            </div>
-        </form>
-
-        <hr class="my-5">
-
-        <h3 class="mb-4 text-light">O que os Visitantes Estão Dizendo</h3>
         <div>
-            {{range .Avaliacoes}}
-            <div class="card card-custom mb-3">
-                <div class="card-body">
-                    <h5 class="card-title text-light">{{.NomeAvaliador}}</h5>
-                    <h6 class="card-subtitle mb-2 text-warning">Nota: {{.Nota}} de 5</h6>
-                    <p class="card-text">{{.Comentario}}</p>
-                    <small class="text-muted">{{.CreatedAt.Format "02/01/2006 às 15:04"}}</small>
+            <h2 class="text-center mb-5 titulo-gradiente">Avaliações dos Visitantes</h2>
+
+            <div class="text-center mb-5">
+                <h4 class="text-light">Nota Média do Projeto</h4>
+                <div class="display-4 text-warning">{{printf "%.1f" .NotaMedia}} / 5</div>
+                <div class="text-muted">Baseado em {{.TotalAvaliacoes}} avaliações</div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h3 class="mb-4 text-light">Deixe sua Avaliação</h3>
+                    <form action="/adicionar-avaliacao" method="post" class="p-4 rounded-3" style="background-color: var(--cor-fundo-card);">
+                        <input type="hidden" name="projeto_id" value="{{.ID}}">
+                        <div class="row g-3">
+                            <div class="col-md-6 mb-3">
+                                <label for="nome_avaliador" class="form-label">Seu Nome (Obrigatório)</label>
+                                <input type="text" class="form-control" name="nome_avaliador" id="nome_avaliador" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="nota" class="form-label">Sua Nota (1 a 5)</label>
+                                <select name="nota" id="nota" class="form-select" required>
+                                    <option value="" disabled selected>Escolha uma nota...</option>
+                                    <option value="5">⭐⭐⭐⭐⭐ (Excelente)</option>
+                                    <option value="4">⭐⭐⭐⭐ (Muito Bom)</option>
+                                    <option value="3">⭐⭐⭐ (Bom)</option>
+                                    <option value="2">⭐⭐ (Razoável)</option>
+                                    <option value="1">⭐ (Ruim)</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="comentario" class="form-label">Seu Comentário (Opicional)</label>
+                                <textarea name="comentario" id="comentario" rows="3" class="form-control"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-gradiente">Enviar Avaliação</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            {{else}}
-            <p class="text-muted">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>
-            {{end}}
+
+            <hr class="my-5">
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h3 class="mb-4 text-light">O que os Visitantes Disseram</h3>
+                    {{range .Avaliacoes}}
+                    <div class="card card-custom mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title text-light mb-0">{{.NomeAvaliador}}</h5>
+                                <span class="badge bg-warning text-dark">Nota: {{.Nota}} / 5</span>
+                            </div>
+                            <small class="text-muted d-block mb-2">{{.CreatedAt.Format "02 de Janeiro de 2006 às 15:04"}}</small>
+                            <p class="card-text mt-3">{{.Comentario}}</p>
+                        </div>
+                    </div>
+                    {{else}}
+                    <div class="card card-custom">
+                        <div class="card-body text-center">
+                            <p class="text-muted mb-0">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>
+                        </div>
+                    </div>
+                    {{end}}
+                </div>
+            </div>
         </div>
     </div>
 
-
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
