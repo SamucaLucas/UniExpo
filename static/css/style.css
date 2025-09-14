@@ -17,7 +17,6 @@
 
 body {
     background-color: var(--cor-fundo-escuro);
-    /* Efeito de gradiente sutil no fundo */
     background-image: radial-gradient(circle at 1% 1%, var(--cor-fundo-card) 0%, transparent 50%), radial-gradient(circle at 99% 99%, #132c58 0%, transparent 40%);
     color: var(--cor-texto-principal);
     min-height: 100vh;
@@ -36,25 +35,31 @@ body {
 }
 
 
-/* Estilo dos Cards de Aluno */
+/* --- MUDANÇA AQUI --- */
 
-.card-aluno {
+
+/* Estilo customizado para os cards (Alunos e Projetos) */
+
+.card-custom {
     background-color: var(--cor-fundo-card) !important;
     border: 1px solid var(--cor-borda) !important;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     text-decoration: none;
 }
 
-.card-aluno:hover {
+.card-custom:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 30px rgba(59, 130, 246, 0.2);
     border-color: var(--cor-azul-brilhante) !important;
 }
 
-.card-aluno .card-img-top {
+.card-custom .card-img-top {
     aspect-ratio: 1 / 1;
     object-fit: cover;
 }
+
+
+/* Fim da mudança */
 
 
 /* Botões com Gradiente */
@@ -82,7 +87,7 @@ body {
 }
 
 
-/* Badges de Skills */
+/* Badges de Skills e Funções */
 
 .badge.bg-primary {
     background-color: rgba(59, 130, 246, 0.3) !important;

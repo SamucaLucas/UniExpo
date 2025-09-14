@@ -1,6 +1,7 @@
 package controle
 
 import (
+	"log"
 	"modulo/modelo"
 	"net/http"
 	"strconv"
@@ -27,8 +28,55 @@ func ProjetoDetailPage(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func CadastroProjetoPage(w http.ResponseWriter, r *http.Request) {
+    if r.Method == http.MethodGet {
+        // Para o método GET, precisamos buscar todos os alunos para popular o formulário
+        alunos, err := modelo.GetAllAlunos() // Você precisará ter essa função no seu modelo de aluno
+        if err != nil {
+            http.Error(w, "Erro ao buscar alunos", http.StatusInternalServerError)
+            return
+        }
+        templates.ExecuteTemplate(w, "cadastro_projeto.html", alunos)
+        return
+    }
 
+    if r.Method == http.MethodPost {
+        r.ParseForm()
 
-// Você precisará de uma página de cadastro para o projeto também.
-// A lógica do POST para criar o projeto e a equipe em uma transação
-// seria mais complexa e pode ser um próximo passo.
+        // 1. Cria o objeto Projeto com os dados do formulário
+        projeto := modelo.Projeto{
+            Titulo:      r.FormValue("titulo"),
+            Descricao:   r.FormValue("descricao"),
+            ImagemURL:   r.FormValue("imagem_url"),
+            LinkProjeto: r.FormValue("link_projeto"),
+        }
+
+        // 2. Cria a lista de membros da equipe
+        var equipe []modelo.MembroEquipe
+        // O formulário enviará os IDs e funções como listas (slices)
+        alunoIDs := r.Form["aluno_id"]
+        funcoes := r.Form["funcao"]
+
+        // Garante que temos a mesma quantidade de IDs e funções
+        if len(alunoIDs) == len(funcoes) {
+            for i, idStr := range alunoIDs {
+                alunoID, _ := strconv.Atoi(idStr)
+                equipe = append(equipe, modelo.MembroEquipe{
+                    AlunoID: alunoID,
+                    Funcao:  funcoes[i],
+                })
+            }
+        }
+
+        // 3. Chama a função do modelo para salvar tudo no banco
+        err := modelo.CreateProjeto(&projeto, equipe)
+        if err != nil {
+            log.Printf("Erro ao criar projeto: %v", err)
+            http.Error(w, "Erro ao salvar o projeto", http.StatusInternalServerError)
+            return
+        }
+
+        // 4. Redireciona para a página de listagem de projetos
+        http.Redirect(w, r, "/projetos", http.StatusSeeOther)
+    }
+}
