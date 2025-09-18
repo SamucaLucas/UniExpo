@@ -25,7 +25,9 @@
                 <div class="p-4 p-md-5 rounded-3" style="background-color: var(--cor-fundo-card); border: 1px solid var(--cor-borda);">
                     <div class="row g-4 align-items-center">
                         <div class="col-md-4 text-center">
-                            <img src="{{.FotoURL}}" class="img-fluid rounded-circle" alt="Foto de {{.Nome}}" style="width: 150px; height: 150px; object-fit: cover;">
+                            {{if .FotoURL}}
+                            <img src="{{.FotoURL}}" class="img-fluid rounded-circle" alt="Foto de {{.Nome}}" style="width: 150px; height: 150px; object-fit: cover;" onerror="this.onerror=null; this.src='/static/img/default-avatar.png';"> {{else}}
+                            <img src="/static/img/default-avatar.png" class="img-fluid rounded-circle" alt="Foto de {{.Nome}}" style="width: 150px; height: 150px; object-fit: cover;"> {{end}}
                         </div>
                         <div class="col-md-8">
                             <h1 class="titulo-gradiente display-5">{{.Nome}}</h1>

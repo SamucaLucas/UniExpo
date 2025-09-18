@@ -49,8 +49,11 @@
                 {{range .}}
                 <div class="col">
                     <a href="/aluno?id={{.ID}}" class="card h-100 shadow-sm card-custom">
-                        <img src="{{.FotoURL}}" class="card-img-top" alt="Foto de {{.Nome}}">
-                        <div class="card-body">
+                        {{if .FotoURL}}
+                            <img src="{{.FotoURL}}" class="card-img-top" alt="Foto de {{.Nome}}" onerror="this.onerror=null; this.src='/static/img/default-avatar.png';">
+                        {{else}}
+                            <img src="/static/img/default-avatar.png" class="card-img-top" alt="Foto de {{.Nome}}">
+                        {{end}}                        <div class="card-body">
                             <h5 class="card-title text-light">{{.Nome}}</h5>
                             <p class="card-text text-muted">{{.Periodo}}º Período</p>
                             <div class="mt-3">
