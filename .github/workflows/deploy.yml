@@ -16,7 +16,7 @@ jobs:
     steps:
       # 1. Baixa o código do seu repositório para dentro do runner
       - name: Executa o script de deploy no servidor via SSH
-        uses: appleboy/ssh-action@master
+        uses: actions/checkout@v4
 
       # 2. Conecta no seu VPS via SSH e executa os comandos de deploy
       - name: Deploy no VPS via SSH
