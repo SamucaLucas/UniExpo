@@ -15,8 +15,8 @@ jobs:
     # Passos (steps) que a tarefa de deploy vai executar em sequência
     steps:
       # 1. Baixa o código do seu repositório para dentro do runner
-      - name: Checkout do código
-        uses: actions/checkout@v4
+      - name: Executa o script de deploy no servidor via SSH
+        uses: appleboy/ssh-action@master
 
       # 2. Conecta no seu VPS via SSH e executa os comandos de deploy
       - name: Deploy no VPS via SSH
@@ -26,11 +26,6 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           script: |
-            # Navega até o diretório do seu projeto no VPS
             cd /home/UniExpo/
-            
-            # Puxa as últimas alterações do repositório
-            # (Você precisa ter clonado seu projeto do GitHub para o VPS uma vez manualmente)
-            echo ">>> Código atualizado com sucesso via git pull."
-            git pull origin main
+            ./deploy.sh
             
